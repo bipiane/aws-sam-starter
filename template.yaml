@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: qr_cloud SAM application with API Gateway and Go Lambda
+
+Parameters:
+  Environment:
+    Type: String
+    Default: 'testing'
+    AllowedValues:
+      - 'testing'
+      - 'staging'
+      - 'production'
+    Description: 'Stack creation environment'
+
+  Project:
+    Type: String
+    Default: 'aws-sam-starter'
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+    Runtime: provided.al2023
+    Architectures:
+      - x86_64
+
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Environment
+
+  QrFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
+    Properties:
+      FunctionName: !Sub '${Project}-QrFunction'
+      Description: 'QR Lambda handler'
+      CodeUri: ./cmd/qr/
+      Handler: bootstrap
+      Events:
+        ListQR:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/qr
+            Method: GET
+        CreateQR:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/qr
+            Method: POST
+        GetQR:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/qr/{id}
+            Method: GET
+        DeleteQR:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/qr/{id}
+            Method: DELETE
+
+  QrFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${QrFunction}"
+      RetentionInDays: 14
+
+Outputs:
+  ApiUrl:
+    Description: HTTP API endpoint
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/api/qr"
+  QrFunctionArn:
+    Description: Lambda ARN
+    Value: !GetAtt QrFunction.Arn
