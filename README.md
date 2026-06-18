@@ -8,23 +8,25 @@ applications on AWS using AWS SAM.
 - AWS SAM CLI
 - Go 1.22 o superior
 
-## Commands
+## Run
 
 ```bash
-# Build
+# Build SAM
 sam build
 ```
 
 ```bash
-# Run local server
+# Start Lambda at http://127.0.0.1:3001
 sam local start-api
-curl http://127.0.0.1:3000/api/qr
+
+# Local
+sam local invoke QrFunction --event events/apigateway-list-qr.json
+
+# Remote
+sam remote invoke QrFunction --profile your-aws-profile --region us-east-1 --stack-name aws-sam-starter --event-file './events/apigateway-list-qr.json'
 ```
 
-```bash
-# Invoke local lambda
-sam local invoke QrFunction --event events/apigateway-list-qr.json
-```
+## Deploy
 
 ```bash
 # Deploy
