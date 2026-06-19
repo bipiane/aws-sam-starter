@@ -25,7 +25,7 @@ Globals:
       - x86_64
 
 Resources:
-  HttpApi:
+  HttpApiQR:
     Type: AWS::Serverless::HttpApi
     Properties:
       StageName: !Ref Environment
@@ -43,25 +43,25 @@ Resources:
         ListQR:
           Type: HttpApi
           Properties:
-            ApiId: !Ref HttpApi
+            ApiId: !Ref HttpApiQR
             Path: /api/qr
             Method: GET
         CreateQR:
           Type: HttpApi
           Properties:
-            ApiId: !Ref HttpApi
+            ApiId: !Ref HttpApiQR
             Path: /api/qr
             Method: POST
         GetQR:
           Type: HttpApi
           Properties:
-            ApiId: !Ref HttpApi
+            ApiId: !Ref HttpApiQR
             Path: /api/qr/{id}
             Method: GET
         DeleteQR:
           Type: HttpApi
           Properties:
-            ApiId: !Ref HttpApi
+            ApiId: !Ref HttpApiQR
             Path: /api/qr/{id}
             Method: DELETE
 
@@ -74,7 +74,7 @@ Resources:
 Outputs:
   ApiUrl:
     Description: HTTP API endpoint
-    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/api/qr"
+    Value: !Sub "https://${HttpApiQR}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/api/qr"
   QrFunctionArn:
     Description: Lambda ARN
     Value: !GetAtt QrFunction.Arn
