@@ -1,3 +1,10 @@
+### SAM ###
+# Ignore build directories for the AWS Serverless Application Model (SAM)
+# Info: https://aws.amazon.com/serverless/sam/
+# Docs: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-reference.html
+
+**/.aws-sam
+
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
